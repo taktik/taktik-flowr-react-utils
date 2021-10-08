@@ -1,10 +1,10 @@
-import { TestComponent } from 'taktik-flowr-react-utils'
+import { StyledComponentMixins } from './StyledComponentMixins'
 
 export const App = () => {
 	return (
-		<div>
-			this is the app demo
-			<TestComponent value="Arnaud" />
-		</div>
+		<>
+			<h1>Styled components mixins examples</h1>
+			<StyledComponentMixins />
+		</>
 	)
 }

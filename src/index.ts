@@ -1,1 +1,1 @@
-export { TestComponent } from './TestComponent'
+export * from './styled-components/flexboxMixins'

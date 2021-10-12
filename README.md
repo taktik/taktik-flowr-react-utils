@@ -2,6 +2,8 @@
 
 This package contains multiple React utils used accross several FlowR embedded/external apps
 
+Install `npm install taktik-flowr-react-utils`
+
 This package uses `yarn`
 
 ## Demo

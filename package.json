@@ -29,14 +29,17 @@
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"styled-components": "^5.3.1",
-		"typescript": "^4.4.3"
+		"typescript": "^4.4.3",
+		"taktik_flowr_interface": "^5.3.3-alpha.0"
 	},
 	"peerDependencies": {
-		"@types/react": "^17.0.27",
-		"@types/react-dom": "^17.0.9",
-		"react": "^17.0.2",
-		"react-dom": "^17.0.2",
-		"styled-components": "^5.3.1"
+		"@types/react": ">=17.0",
+		"@types/react-dom": ">=17.0",
+		"@types/styled-components": ">=5.0",
+		"react": ">=17.0",
+		"react-dom": ">=17.0",
+		"styled-components": ">=5.0",
+		"taktik_flowr_interface": ">=5.3.3-alpha.0"
 	},
 	"scripts": {
 		"start": "cd demo && yarn start",

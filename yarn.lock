@@ -1192,6 +1192,17 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+helpful-decorators@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/helpful-decorators/-/helpful-decorators-2.0.4.tgz#d130428f3c0d9ac64897b6ce9f6b45e9adb8865b"
+  integrity sha512-8+LNKPz0LCQ7t0BUcg87gWvjCpoL2AfFdk+l6NIbuG5BnA7BlPF9MbH3j2VMxhRyDG12IH2RYe/399QpUr7hdA==
+  dependencies:
+    lodash.debounce "4.0.8"
+    lodash.delay "4.1.1"
+    lodash.memoize "4.1.2"
+    lodash.once "4.1.1"
+    lodash.throttle "4.1.1"
+
 hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.0:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
@@ -1528,10 +1539,35 @@ lodash.clonedeep@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
+lodash.debounce@4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+  integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
+
+lodash.delay@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.delay/-/lodash.delay-4.1.1.tgz#8a3b424988252ab912356d8e3ce93eb172d9f231"
+  integrity sha1-ijtCSYglKrkSNW2OPOk+sXLZ8jE=
+
+lodash.memoize@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
+  integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
+
 lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+
+lodash.once@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
+  integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
+
+lodash.throttle@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
+  integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
 lodash.truncate@^4.4.2:
   version "4.4.2"
@@ -1552,6 +1588,16 @@ log-update@^4.0.0:
     cli-cursor "^3.1.0"
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
+
+log4javascript@1.4.15:
+  version "1.4.15"
+  resolved "https://registry.yarnpkg.com/log4javascript/-/log4javascript-1.4.15.tgz#85ac62e946b024c6b256216084e10601d5630604"
+  integrity sha1-haxi6UawJMayViFghOEGAdVjBgQ=
+
+log4javascript@^1.4.15:
+  version "1.4.16"
+  resolved "https://registry.yarnpkg.com/log4javascript/-/log4javascript-1.4.16.tgz#cc6cbcf11fca537a19783df246a1d581b3ab3054"
+  integrity sha512-LaKmdz/+Ix/np+LNrh0hi3dapZUzQ80EGQ6AqnHja5YZVLQ/++rjJbABJ96IICHDsnlsn7hGx1hfMIuUt0vjog==
 
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
@@ -1729,6 +1775,33 @@ optionator@^0.9.1:
     prelude-ls "^1.2.1"
     type-check "^0.4.0"
     word-wrap "^1.2.3"
+
+ozone-search-helper@^5.2.1:
+  version "5.9.2"
+  resolved "https://registry.yarnpkg.com/ozone-search-helper/-/ozone-search-helper-5.9.2.tgz#ecb0134013a57ac3d8e8ec84875e459fd6713538"
+  integrity sha512-XMQm7dWr9mnaEhCa+PwcWzEZUAdm5FZSZmem2OgTgOCERICwvnI910FBhf1KMy+rPU+9buuCB/KaI0YMM2Qx8w==
+
+ozone-type@5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/ozone-type/-/ozone-type-5.2.1.tgz#2602045f3bf8ed026824b961abdeb00815febb71"
+  integrity sha512-KHz0i/xv86u6KobhCvBUYdV97lJudog6BIRuZCiuWxGKrNu6DnWIuFzRLaE+MAoLY6Ni3rm4QxagF4yBlNdu/Q==
+
+ozone-type@^5.2.1:
+  version "5.9.2"
+  resolved "https://registry.yarnpkg.com/ozone-type/-/ozone-type-5.9.2.tgz#a117dd3c999cb3e8666e2d071161d406d25241c3"
+  integrity sha512-aV2g99u2okaa88g/vxzS8tc9Vklz2l9XPeu4k/yfmU8g74w7slwGytWJ824qHthaGl8KvXSkVPQ8DNaE03x1lw==
+
+ozone-typescript-client@5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/ozone-typescript-client/-/ozone-typescript-client-5.2.1.tgz#bfb2722187d873d2c975b81c37e50c19d72da75f"
+  integrity sha512-OeCACC3z3Mmj8qQ7SIpSzlLxjGNodEdU190jE+6ei1Q1teERRgrPWiVGJn6u3odXfHlxHVX1l15pW93Ths2zFA==
+  dependencies:
+    helpful-decorators "2.0.4"
+    log4javascript "1.4.15"
+    ozone-search-helper "^5.2.1"
+    ozone-type "^5.2.1"
+    typescript-http-client "0.10.1"
+    typescript-state-machine "0.9.3"
 
 p-limit@^1.1.0:
   version "1.3.0"
@@ -2239,6 +2312,16 @@ table@^6.0.9:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
+taktik_flowr_interface@^5.3.3-alpha.0:
+  version "5.3.3-alpha.0"
+  resolved "https://registry.yarnpkg.com/taktik_flowr_interface/-/taktik_flowr_interface-5.3.3-alpha.0.tgz#1c43d3d976376336cbb33b1e84eac86c14b43a59"
+  integrity sha512-YNOqFac8R1F66NmxryOrHns0AYcRiISyNnqFfTl2zEJN35zzg9sTBKtydiEztlt4lmYIPf8L2Ax6/aElD5+wvg==
+  dependencies:
+    ozone-type "5.2.1"
+    ozone-typescript-client "5.2.1"
+    typescript-http-client "0.10.1"
+    typescript-state-machine "^0.9.4"
+
 text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
@@ -2299,6 +2382,27 @@ type-fest@^0.21.3:
   version "0.21.3"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.21.3.tgz#d260a24b0198436e133fa26a524a6d65fa3b2e37"
   integrity sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==
+
+typescript-http-client@0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/typescript-http-client/-/typescript-http-client-0.10.1.tgz#a21283ba23f183e2d7f03143fc15845aef40ccea"
+  integrity sha512-lbmJ2VBcDBbHPmLXuhMiJatoIg+n66dzyqHUOd4GPJhwvPysTqF+QCCy+TMWtIKb7IQrKfWaKRQQ276fLFM8fg==
+  dependencies:
+    log4javascript "^1.4.15"
+
+typescript-state-machine@0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/typescript-state-machine/-/typescript-state-machine-0.9.3.tgz#841fc7a33d78ad7bf60b4999a6053d72da77c9a9"
+  integrity sha512-Vrtp1W2YwY96t2Xk/m7JarG02UJwjvZ6liePkjTXtJ/lKUx1HMEHWlchOiBf2j3qkHktyN4NenxMLYbujxjzqg==
+  dependencies:
+    log4javascript "^1.4.15"
+
+typescript-state-machine@^0.9.4:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/typescript-state-machine/-/typescript-state-machine-0.9.5.tgz#7e9e7193d50aadc16dab66a3b5eea78444db863c"
+  integrity sha512-W3AfzZcJsV1WlxoxofWda6uCNY9wyV9Hf7qq/+0Rwb+HPe/NuJiQTJDm/HWQckeOLpUP9U/FD0aCcGajAH3XqQ==
+  dependencies:
+    log4javascript "^1.4.15"
 
 typescript@^4.4.3:
   version "4.4.3"

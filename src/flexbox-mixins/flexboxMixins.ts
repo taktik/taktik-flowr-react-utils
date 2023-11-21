@@ -47,15 +47,6 @@ export const flex = (value: number) => css`
 	flex: ${value};
 `
 
-export const gap = (value: string) => css`
-	> * {
-		margin-right: ${value};
-		&:last-child {
-			margin-right: 0;
-		}
-	}
-`
-
 export const flexGrow = (value: number) => css`
 	-webkit-box-flex: ${value};
 	-webkit-flex-grow: ${value};

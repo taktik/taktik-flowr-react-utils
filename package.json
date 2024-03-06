@@ -1,6 +1,6 @@
 {
 	"name": "taktik-flowr-react-utils",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"private": false,
 	"author": "Arnaud Gathy",
 	"license": "MIT",
@@ -44,5 +44,8 @@
 	"scripts": {
 		"start": "cd demo && yarn start",
 		"build": "rm -rf dist && tsc"
+	},
+	"publishConfig": {
+		"registry": "https://registry.npmjs.com/"
 	}
 }

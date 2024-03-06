@@ -92,6 +92,7 @@ interface IParams {
 	shouldReturnToFlowr?: boolean
 	setFocusToThisComponentWhenMounted?: boolean
 	shouldBlockActions?: boolean
+	context?: object
 }
 
 /**
@@ -128,6 +129,7 @@ export const useNavigation = ({
 	enterAction,
 	returnAction,
 	dependencies,
+	context
 }: IParams) => {
 	const actionsHandler = (event: KeyboardEvent) => {
 		switch (event.key) {
@@ -160,14 +162,14 @@ export const useNavigation = ({
 	const subscribe = () => {
 		unsubscribe()
 		if (eventManager) {
-			upAction && eventManager.on(FlowrEventName.ARROW_UP_PRESS, upAction, this)
-			rightAction && eventManager.on(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, this)
-			downAction && eventManager.on(FlowrEventName.ARROW_DOWN_PRESS, downAction, this)
-			leftAction && eventManager.on(FlowrEventName.ARROW_LEFT_PRESS, leftAction, this)
-			enterAction && eventManager.on(FlowrEventName.ENTER_PRESS, enterAction, this)
+			upAction && eventManager.on(FlowrEventName.ARROW_UP_PRESS, upAction, context ?? this)
+			rightAction && eventManager.on(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, context ?? this)
+			downAction && eventManager.on(FlowrEventName.ARROW_DOWN_PRESS, downAction, context ?? this)
+			leftAction && eventManager.on(FlowrEventName.ARROW_LEFT_PRESS, leftAction, context ?? this)
+			enterAction && eventManager.on(FlowrEventName.ENTER_PRESS, enterAction, context ?? this)
 			returnAction &&
 				!shouldReturnToFlowr &&
-				eventManager.forceOn(FlowrEventName.RETURN_PRESS, returnAction, this)
+				eventManager.forceOn(FlowrEventName.RETURN_PRESS, returnAction, context ?? this)
 		} else {
 			window.addEventListener('keydown', actionsHandler)
 		}
@@ -175,14 +177,14 @@ export const useNavigation = ({
 
 	const unsubscribe = () => {
 		if (eventManager) {
-			upAction && eventManager.off(FlowrEventName.ARROW_UP_PRESS, upAction, this)
-			rightAction && eventManager.off(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, this)
-			downAction && eventManager.off(FlowrEventName.ARROW_DOWN_PRESS, downAction, this)
-			leftAction && eventManager.off(FlowrEventName.ARROW_LEFT_PRESS, leftAction, this)
-			enterAction && eventManager.off(FlowrEventName.ENTER_PRESS, enterAction, this)
+			upAction && eventManager.off(FlowrEventName.ARROW_UP_PRESS, upAction, context ?? this)
+			rightAction && eventManager.off(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, context ?? this)
+			downAction && eventManager.off(FlowrEventName.ARROW_DOWN_PRESS, downAction, context ?? this)
+			leftAction && eventManager.off(FlowrEventName.ARROW_LEFT_PRESS, leftAction, context ?? this)
+			enterAction && eventManager.off(FlowrEventName.ENTER_PRESS, enterAction, context ?? this)
 			returnAction &&
 				!shouldReturnToFlowr &&
-				eventManager.forceOff(FlowrEventName.RETURN_PRESS, returnAction, this)
+				eventManager.forceOff(FlowrEventName.RETURN_PRESS, returnAction, context ?? this)
 		} else {
 			window.removeEventListener('keydown', actionsHandler)
 		}

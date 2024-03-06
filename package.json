@@ -9,8 +9,8 @@
 	],
 	"main": "dist/index.js",
 	"devDependencies": {
-		"@types/react": "^17.0.27",
-		"@types/react-dom": "^17.0.9",
+		"@types/react": "^18.2.63",
+		"@types/react-dom": "^18.2.17",
 		"@types/styled-components": "^5.1.15",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
@@ -26,10 +26,10 @@
 		"husky": "^7.0.2",
 		"lint-staged": "^11.2.0",
 		"prettier": "^2.4.1",
-		"react": "^17.0.2",
-		"react-dom": "^17.0.2",
-		"styled-components": "^5.3.1",
-		"typescript": "^4.4.3",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"styled-components": "^6.1.8",
+		"typescript": "^5.3.3",
 		"taktik_flowr_interface": "^5.3.3-alpha.0"
 	},
 	"peerDependencies": {

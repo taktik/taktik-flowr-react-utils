@@ -16,6 +16,7 @@ export enum FlexWrapValues {
 
 export enum JustifyContentValues {
 	SPACE_BETWEEN = 'space-between',
+	SPACE_AROUND = 'space-around',
 	CENTER = 'center',
 	FLEX_START = 'flex-start',
 	FLEX_END = 'flex-end',

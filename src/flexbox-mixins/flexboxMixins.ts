@@ -120,7 +120,7 @@ export const flexBasis = (value: string) => css`
 // - applies to: flex containers
 // nowrap | wrap | wrap-reverse
 export const flexWrap = (type: FlexWrapValues) => css`
-	-ms-flex-wrap: ${({ type: FlexWrapValues }) => type === FlexWrapValues.NO_WRAP ? 'none' : type};
+	-ms-flex-wrap: ${type === FlexWrapValues.NO_WRAP ? 'none' : type};
 	-webkit-flex-wrap: ${type};
 	flex-wrap: ${type};
 `

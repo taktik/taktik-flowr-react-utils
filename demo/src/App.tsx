@@ -1,6 +1,6 @@
 import { StyledComponentMixinsExample } from './example-components/StyledComponentMixinsExample'
 import { NavigationExample } from './example-components/NavigationExample'
-import { UseNavigationProvider } from 'taktik-flowr-react-utils'
+import { UseNavigationProvider } from '@taktik/taktik-flowr-react-utils'
 import { ComponentNames } from './constants/navigationComponentNames'
 import { NavigationExample2 } from './example-components/NavigationExample2'
 

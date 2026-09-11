@@ -1,4 +1,4 @@
-import { useNavigateToComponent, useNavigation } from 'taktik-flowr-react-utils'
+import { useNavigateToComponent, useNavigation } from '@taktik/taktik-flowr-react-utils'
 import { useState } from 'react'
 import { FocusableDiv } from '../style/FocusableDiv'
 import styled from 'styled-components'

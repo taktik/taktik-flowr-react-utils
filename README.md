@@ -1,8 +1,21 @@
-# taktik-flowr-react-utils
+# @taktik/taktik-flowr-react-utils
 
 This package contains multiple React utils used accross several FlowR embedded/external apps
 
-Install `npm install taktik-flowr-react-utils`
+Published on Taktik's Nexus npm registry (same registry as `@taktik/taktik-react-components`). The
+consumer needs the `@taktik` scope mapped to it, in its `.npmrc` or `~/.npmrc` (reads are anonymous,
+no login needed to install):
+
+```
+@taktik:registry=https://npm.taktik.be/repository/npm/
+```
+
+Then `yarn add @taktik/taktik-flowr-react-utils@<exact version>`.
+
+> Until 1.0.4 this package was published on the public npm registry as `taktik-flowr-react-utils`.
+> That name is deprecated and frozen at 1.0.4: it receives no further fix. Do not let both end up in
+> the same dependency tree — two copies means two navigation contexts, and the focus silently stops
+> moving.
 
 This package uses `yarn`
 
@@ -25,7 +38,7 @@ Those rules have been packages inside styled component exportable code as `css`.
 easy importing the rules you want to use, and call them inside a styled-component's CSS :
 
 ```
-import { displayFlex, justifyContent, JustifyContentValues, flexDirection, FlexDirectionValues } from 'taktik-flowr-react-utils'
+import { displayFlex, justifyContent, JustifyContentValues, flexDirection, FlexDirectionValues } from '@taktik/taktik-flowr-react-utils'
 
 const SomeStyledComponent = styled.div`
     ${displayFlex}
@@ -95,16 +108,15 @@ export enum ComponentNames {
    starts up.
 
 ```tsx
-import { UseNavigationProvider } from 'taktik-flowr-react-utils`
+import { UseNavigationProvider } from '@taktik/taktik-flowr-react-utils'
 
-export const YourHighestComponent = () =>
-    (
-    <UseNavigationProvider
-        defaultFocusedComponentName={ComponentNames.MAIN_SCREEN} // required
-    >
-        <YouApp />
-    </UseNavigationProvider>
-    )
+export const YourHighestComponent = () => (
+	<UseNavigationProvider
+		defaultFocusedComponentName={ComponentNames.MAIN_SCREEN} // required
+	>
+		<YouApp />
+	</UseNavigationProvider>
+)
 ```
 
 3. Then, in every component you want to be "focusable" you need to use the hook
@@ -113,7 +125,7 @@ export const YourHighestComponent = () =>
    each user action (arrows, ok, return).
 
 ```tsx
-import { useNavigation } from 'taktik-flowr-react-utils'
+import { useNavigation } from '@taktik/taktik-flowr-react-utils'
 
 export const MainScreen = () => {
     const isFocused = useNavigation({
@@ -133,7 +145,7 @@ This is the bare minimum options, this will make your component "focusable" turn
    focus to the specified component. Let's take the previous example, and improve it
 
 ```tsx
-import { useNavigation, useNavigateToComponent } from 'taktik-flowr-react-utils'
+import { useNavigation, useNavigateToComponent } from '@taktik/taktik-flowr-react-utils'
 
 export const MainScreen = () => {
 	const navigateToNavbar = useNavigateToComponent(ComponentNames.NAV_BAR) // Returns a function to call to change the focused component
@@ -154,7 +166,7 @@ export const MainScreen = () => {
    up arrow.
 
 ```tsx
-import { useNavigation, useNavigateToComponent } from 'taktik-flowr-react-utils'
+import { useNavigation, useNavigateToComponent } from '@taktik/taktik-flowr-react-utils'
 
 export const MainScreen = () => {
 	const navigateToNavbar = useNavigateToComponent(ComponentNames.NAV_BAR)
@@ -213,8 +225,8 @@ If you are developing in this package and you want to test it in another package
 you are going to run into some package duplication issue (translated as a blocking hook error in
 React).
 
-On the package you want to include taktik-flowr-react-utils in, you need to symlink the packages
-`react` and `react-dom` to make sure both package use the same dependency.
+On the package you want to include @taktik/taktik-flowr-react-utils in, you need to symlink the
+packages `react` and `react-dom` to make sure both package use the same dependency.
 
 For example, i'm making change in this package, and want to test the package in the Hestia app I
 will need to do :
@@ -230,3 +242,32 @@ for those the duplication is not critical
 
 This is why in `/demo/package.json` `react` and `react-dom` and `styled-component` are links to the
 main modules
+
+## Build & publish (CI)
+
+Publishing is done by the Taktik CI (Cloud Build, driven by the build-manager), see
+[`ci/cloudbuild.yaml`](ci/cloudbuild.yaml):
+
+1. the version is computed by [git-version](https://github.com/taktik/git-version) from the last git
+   tag, e.g. tag `1.1` + 12 commits → `1.1.12-g<hash>` (feature branches get a branch identifier);
+2. `verify` gates the publish: `yarn install --frozen-lockfile`, `yarn typecheck`, `yarn lint`.
+   There is no test suite yet — add `yarn test` to that step the day there is one;
+3. `yarn build`, then `npm version` is set to the computed version. The `version` field in
+   `package.json` is never bumped by hand;
+4. `npm publish` on the Nexus (registry taken from `publishConfig`, credentials from the CI Nexus
+   account): `master` publishes under the `latest` dist-tag, any other built branch under a dist-tag
+   named after the branch, so it never shadows `latest`.
+
+Because the version carries a `-g<hash>` pre-release suffix, consumers should pin exact versions
+(`"@taktik/taktik-flowr-react-utils": "1.1.12-g3f2a9c1b7e"`), `^` ranges won't pick up new builds.
+
+To bump the major/minor version, push a new tag on `master` (`git tag 1.2 && git push origin 1.2`).
+
+### Manual publish (fallback only)
+
+```bash
+yarn && yarn build
+npm version <version> --no-git-tag-version
+npm login --registry=https://npm.taktik.be/repository/npm/ --scope=@taktik   # your Nexus account
+npm publish
+```

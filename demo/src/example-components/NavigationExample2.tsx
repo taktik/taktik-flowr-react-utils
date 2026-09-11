@@ -3,7 +3,7 @@ import {
 	useNavigateToComponent,
 	useNavigateToPreviouslySelectedComponentOrDefault,
 	useNavigation,
-} from 'taktik-flowr-react-utils'
+} from '@taktik/taktik-flowr-react-utils'
 import { ComponentNames } from '../constants/navigationComponentNames'
 
 export const NavigationExample2 = () => {

@@ -1,0 +1,68 @@
+steps:
+    -   id: 'fetch-checkout'
+        name: 'gcr.io/cloud-builders/git'
+        entrypoint: 'bash'
+        args: [ '-c', 'git fetch --unshallow --tags && git checkout $BRANCH_NAME' ]
+
+    -   id: 'git-version'
+        name: 'taktik/git-version:2.0.23-g54f3ef7b6e'
+        args: [ '-f', 'git.version' ]
+
+    # Gates the publish: whatever reaches the registry is what other projects install, so a red
+    # commit must not get that far. Steps share /workspace, so the install here serves the build too.
+    # No `yarn test` yet: this repo has no test suite, and a step that runs nothing would only look
+    # like a gate. Add it here the day there is one.
+    -   id: 'verify'
+        name: 'node:22'
+        entrypoint: 'bash'
+        args:
+            - '-c'
+            - |
+                set -euo pipefail
+                yarn install --frozen-lockfile
+                yarn typecheck
+                yarn lint
+
+    -   id: 'build'
+        waitFor: [ 'verify' ]
+        name: 'node:22'
+        entrypoint: 'bash'
+        args:
+            - '-c'
+            - |
+                set -euo pipefail
+                echo "Building @taktik/taktik-flowr-react-utils@$$(cat git.version)"
+                yarn install --frozen-lockfile
+                yarn build
+                npm version "$$(cat git.version)" --no-git-tag-version
+
+    -   id: 'publish'
+        waitFor: [ 'build' ]
+        name: 'node:22'
+        entrypoint: 'bash'
+        secretEnv: [ 'REPO_USERNAME', 'REPO_PASSWORD' ]
+        args:
+            - '-c'
+            - |
+                set -euo pipefail
+                # master -> "latest" ; any other branch -> a dist-tag named after the branch, so it never overrides "latest"
+                if [ "$BRANCH_NAME" = "master" ]; then TAG="latest"; else TAG="$$(echo "$BRANCH_NAME" | tr -c 'a-zA-Z0-9-\n' '-')"; fi
+                # Nexus accepts basic auth as base64(user:password) on the registry URI.
+                # Only the auth line is set: the registry itself comes from publishConfig in package.json,
+                # so `yarn install` above keeps resolving public deps from npmjs.
+                AUTH="$$(printf '%s:%s' "$$REPO_USERNAME" "$$REPO_PASSWORD" | base64 | tr -d '\n')"
+                echo "//npm.taktik.be/repository/npm/:_auth=$${AUTH}" > ~/.npmrc
+                # `prepublishOnly` rebuilds dist/ here, so what is packed is what this commit compiles to.
+                npm publish --tag "$$TAG"
+                echo "Published @taktik/taktik-flowr-react-utils@$$(cat git.version) (dist-tag: $$TAG)"
+
+availableSecrets:
+    secretManager:
+        -   versionName: projects/taktik-dev/secrets/ci-repo-username/versions/1
+            env: 'REPO_USERNAME'
+        -   versionName: projects/taktik-dev/secrets/ci-repo-password/versions/1
+            env: 'REPO_PASSWORD'
+
+options:
+    machineType: 'E2_HIGHCPU_8'
+timeout: 900s

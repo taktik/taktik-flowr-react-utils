@@ -10362,7 +10362,7 @@ table@^6.0.9:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
-"taktik-flowr-react-utils@link:..":
+"@taktik/taktik-flowr-react-utils@link:..":
   version "0.0.0"
   uid ""
 

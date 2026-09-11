@@ -1,6 +1,11 @@
 {
-	"name": "taktik-flowr-react-utils",
+	"name": "@taktik/taktik-flowr-react-utils",
 	"version": "1.0.4",
+	"description": "Taktik React utils for FlowR apps: arrow-key navigation hook and legacy-safe flexbox mixins",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/taktik/taktik-flowr-react-utils.git"
+	},
 	"private": false,
 	"author": "Arnaud Gathy",
 	"license": "MIT",
@@ -49,6 +54,6 @@
 		"prepublishOnly": "npm run build"
 	},
 	"publishConfig": {
-		"registry": "https://registry.npmjs.com/"
+		"registry": "https://npm.taktik.be/repository/npm/"
 	}
 }

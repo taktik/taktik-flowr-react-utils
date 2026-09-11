@@ -13,7 +13,7 @@ import {
 	useNavigateToComponent,
 	useNavigation,
 	useNavigateToPreviouslySelectedComponentOrDefault,
-} from 'taktik-flowr-react-utils'
+} from '@taktik/taktik-flowr-react-utils'
 import { FocusableDiv } from '../style/FocusableDiv'
 import { ComponentNames } from '../constants/navigationComponentNames'
 

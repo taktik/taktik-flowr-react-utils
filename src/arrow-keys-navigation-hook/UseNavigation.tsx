@@ -92,6 +92,9 @@ interface IParams {
 	shouldReturnToFlowr?: boolean
 	setFocusToThisComponentWhenMounted?: boolean
 	shouldBlockActions?: boolean
+	// `this` binding forwarded to eventManager.on(name, cb, context?: any) - a class instance is a
+	// valid context, which Record<string, unknown> would reject
+	// eslint-disable-next-line @typescript-eslint/ban-types
 	context?: object
 }
 
@@ -129,7 +132,7 @@ export const useNavigation = ({
 	enterAction,
 	returnAction,
 	dependencies,
-	context
+	context,
 }: IParams) => {
 	const actionsHandler = (event: KeyboardEvent) => {
 		switch (event.key) {
@@ -178,7 +181,8 @@ export const useNavigation = ({
 	const unsubscribe = () => {
 		if (eventManager) {
 			upAction && eventManager.off(FlowrEventName.ARROW_UP_PRESS, upAction, context ?? this)
-			rightAction && eventManager.off(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, context ?? this)
+			rightAction &&
+				eventManager.off(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, context ?? this)
 			downAction && eventManager.off(FlowrEventName.ARROW_DOWN_PRESS, downAction, context ?? this)
 			leftAction && eventManager.off(FlowrEventName.ARROW_LEFT_PRESS, leftAction, context ?? this)
 			enterAction && eventManager.off(FlowrEventName.ENTER_PRESS, enterAction, context ?? this)

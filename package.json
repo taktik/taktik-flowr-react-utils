@@ -5,9 +5,10 @@
 	"author": "Arnaud Gathy",
 	"license": "MIT",
 	"files": [
-		"/dist"
+		"dist"
 	],
 	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"devDependencies": {
 		"@types/react": "^18.2.63",
 		"@types/react-dom": "^18.2.17",
@@ -41,7 +42,11 @@
 	},
 	"scripts": {
 		"start": "cd demo && yarn start",
-		"build": "rm -rf dist && tsc"
+		"build": "rm -rf dist && tsc",
+		"typecheck": "tsc --noEmit",
+		"lint": "eslint src --ext .ts,.tsx --max-warnings 0",
+		"prepare": "husky install",
+		"prepublishOnly": "npm run build"
 	},
 	"publishConfig": {
 		"registry": "https://registry.npmjs.com/"

@@ -78,7 +78,7 @@ const StyledComponentExample = ({ children, rules }: IExampleProps) => (
 
 export const StyledComponentMixinsExample = () => {
 	const navigateToNavigationExample = useNavigateToComponent(ComponentNames.NAVIGATION_EXAMPLE)
-	const { navigateToPreviouslySelectedComponentOrDefault, dependency } =
+	const { navigateToPreviouslySelectedComponentOrDefault } =
 		useNavigateToPreviouslySelectedComponentOrDefault()
 	const isFocused = useNavigation({
 		componentName: ComponentNames.MIXINS_EXAMPLE,
@@ -86,7 +86,6 @@ export const StyledComponentMixinsExample = () => {
 		rightAction: () => {
 			navigateToPreviouslySelectedComponentOrDefault(ComponentNames.NAVIGATION_EXAMPLE)
 		},
-		dependencies: [dependency],
 	})
 
 	return (

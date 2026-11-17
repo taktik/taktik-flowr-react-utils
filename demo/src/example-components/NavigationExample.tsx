@@ -42,7 +42,6 @@ export const NavigationExample = () => {
 				setFocusedOption((currentFocus) => currentFocus - 1)
 			}
 		},
-		dependencies: [focusedOption],
 	})
 	return (
 		<Container isFocused={isFocused}>

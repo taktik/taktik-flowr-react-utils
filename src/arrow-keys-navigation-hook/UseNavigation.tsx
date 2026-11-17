@@ -60,12 +60,14 @@ export const UseNavigationProvider = ({
 	defaultFocusedComponentName,
 	defaultPreviouslyFocusedComponentName,
 }: IProps) => {
-	// a provider without an eventManager falls back to the one another provider published here
+	const outerEventManager = useContext(NevigationContext).eventManager
+	const providedEventManager = eventManager ?? outerEventManager
+	// for code outside React; inside, read it with useNavigationEventManager
 	useLayoutEffect(() => {
-		if (eventManager) {
-			window.eventManager = eventManager
+		if (providedEventManager) {
+			window.eventManager = providedEventManager
 		}
-	}, [eventManager])
+	}, [providedEventManager])
 
 	const [focusedComponent, setFocusedComponent] = useState(defaultFocusedComponentName)
 	const [previouslyFocusedComponent, setPreviouslyFocusedComponent] = useState(
@@ -82,9 +84,14 @@ export const UseNavigationProvider = ({
 			previouslyFocusedComponent,
 			setPreviouslyFocusedComponent,
 			resetPreviouslySelectedComponent,
-			eventManager,
+			eventManager: providedEventManager,
 		}),
-		[focusedComponent, previouslyFocusedComponent, resetPreviouslySelectedComponent, eventManager]
+		[
+			focusedComponent,
+			previouslyFocusedComponent,
+			resetPreviouslySelectedComponent,
+			providedEventManager,
+		]
 	)
 
 	return <NevigationContext.Provider value={value}>{children}</NevigationContext.Provider>
@@ -140,27 +147,31 @@ export const useNavigation = ({
 	returnAction,
 	context,
 }: IParams) => {
-	const actions = { upAction, rightAction, downAction, leftAction, enterAction, returnAction }
-	const latestActions = useRef(actions)
+	const props = {
+		upAction,
+		rightAction,
+		downAction,
+		leftAction,
+		enterAction,
+		returnAction,
+		context,
+	}
+	const latest = useRef(props)
 	useLayoutEffect(() => {
-		latestActions.current = actions
+		latest.current = props
 	})
 	// subscribed once per focus change; each call reaches the callback of the latest render
 	const handlers = useMemo(
 		() => ({
-			up: () => latestActions.current.upAction?.(),
-			right: () => latestActions.current.rightAction?.(),
-			down: () => latestActions.current.downAction?.(),
-			left: () => latestActions.current.leftAction?.(),
-			enter: () => latestActions.current.enterAction?.(),
-			return: () => latestActions.current.returnAction?.(),
+			up: () => latest.current.upAction?.(),
+			right: () => latest.current.rightAction?.(),
+			down: () => latest.current.downAction?.(),
+			left: () => latest.current.leftAction?.(),
+			enter: () => latest.current.enterAction?.(),
+			return: () => latest.current.returnAction?.(),
 		}),
 		[]
 	)
-	const latestContext = useRef(context)
-	useLayoutEffect(() => {
-		latestContext.current = context
-	})
 
 	const hasUp = !!upAction
 	const hasRight = !!rightAction
@@ -183,11 +194,12 @@ export const useNavigation = ({
 		}
 	}, [setFocusedComponent])
 
-	useEffect(() => {
+	// a layout effect: a key pressed right after a focus change reaches the newly focused component
+	useLayoutEffect(() => {
 		if (!isFocused || shouldBlockActions) {
 			return
 		}
-		// demo pages outside FlowR set window.eventManager themselves
+		// a page can set window.eventManager before React mounts instead of passing it to the provider
 		const eventManager = providedEventManager ?? window.eventManager
 		if (!eventManager) {
 			const onKeyDown = (event: KeyboardEvent) => {
@@ -221,7 +233,7 @@ export const useNavigation = ({
 		}
 
 		// on and off must get the same context: the event manager matches listeners by it
-		const subscriptionContext = latestContext.current
+		const subscriptionContext = latest.current.context
 		const subscriptions: [FlowrEventName, () => void][] = []
 		hasUp && subscriptions.push([FlowrEventName.ARROW_UP_PRESS, handlers.up])
 		hasRight && subscriptions.push([FlowrEventName.ARROW_RIGHT_PRESS, handlers.right])
@@ -270,18 +282,13 @@ export const useNavigateToComponent = (
 ) => {
 	const { setFocusedComponent, setPreviouslyFocusedComponent, focusedComponent } =
 		useContext(NevigationContext)
+	const focusToSave = shouldSavePreviouslyFocused ? focusedComponent : null
 	return useCallback(() => {
-		if (shouldSavePreviouslyFocused) {
-			setPreviouslyFocusedComponent(focusedComponent)
+		if (focusToSave !== null) {
+			setPreviouslyFocusedComponent(focusToSave)
 		}
 		setFocusedComponent(componentName)
-	}, [
-		componentName,
-		shouldSavePreviouslyFocused,
-		focusedComponent,
-		setFocusedComponent,
-		setPreviouslyFocusedComponent,
-	])
+	}, [componentName, focusToSave, setFocusedComponent, setPreviouslyFocusedComponent])
 }
 
 /**
@@ -302,6 +309,11 @@ export const useNavigateToPreviouslySelectedComponentOrDefault = () => {
 		[navigateToPreviouslySelectedComponentOrDefault]
 	)
 }
+
+/**
+ * The FlowR event manager passed to the closest UseNavigationProvider (or an outer one), undefined outside FlowR.
+ */
+export const useNavigationEventManager = () => useContext(NevigationContext).eventManager
 
 export const useResetPreviouslySelectedComponent = () => {
 	const { resetPreviouslySelectedComponent } = useContext(NevigationContext)

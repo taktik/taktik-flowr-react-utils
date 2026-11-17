@@ -8,7 +8,7 @@ import { ComponentNames } from '../constants/navigationComponentNames'
 
 export const NavigationExample2 = () => {
 	const NavigateToExample = useNavigateToComponent(ComponentNames.NAVIGATION_EXAMPLE)
-	const { navigateToPreviouslySelectedComponentOrDefault, dependency } =
+	const { navigateToPreviouslySelectedComponentOrDefault } =
 		useNavigateToPreviouslySelectedComponentOrDefault()
 	const isFocused = useNavigation({
 		componentName: ComponentNames.NAVIGATION_EXAMPLE_2,
@@ -16,7 +16,6 @@ export const NavigationExample2 = () => {
 		rightAction: () => {
 			navigateToPreviouslySelectedComponentOrDefault(ComponentNames.NAVIGATION_EXAMPLE)
 		},
-		dependencies: [dependency],
 	})
 
 	return (

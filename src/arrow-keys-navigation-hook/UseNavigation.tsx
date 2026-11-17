@@ -98,8 +98,6 @@ interface IParams {
 	enterAction?: () => void
 	returnAction?: () => void
 	componentName: string
-	/** @deprecated Ignored: the hook always calls the callbacks of the latest render. */
-	dependencies?: unknown[]
 	shouldReturnToFlowr?: boolean
 	setFocusToThisComponentWhenMounted?: boolean
 	shouldBlockActions?: boolean
@@ -127,7 +125,6 @@ interface IParams {
  * @param options.rightAction - The callback function to execute when the right arrow is pressed
  * @param options.enterAction - The callback function to execute when the "OK" (or enter on keyboard) button is pressed
  * @param options.returnAction - The callback function to execute when the "Return" (or backspace on keyboard) button is pressed
- * @param options.dependencies - Ignored, kept so existing callers compile: a key always runs the callback of the latest render.
  * @Return a boolean telling if the current component (defined by componentName) is currently focused.
  */
 export const useNavigation = ({
@@ -291,7 +288,6 @@ export const useNavigateToComponent = (
  * This hook will focus the previouslyFocusedComponent or a given default if no component was previously focused.
  * @return navigateToPreviouslySelectedComponentOrDefault a function to call to set the focus to the previously selected, it must be provided by
  * a default fallback component in case none has been focused before
- * @return dependency - a value that should be included in the useNavigation hook depencies array
  */
 export const useNavigateToPreviouslySelectedComponentOrDefault = () => {
 	const { previouslyFocusedComponent, setFocusedComponent } = useContext(NevigationContext)
@@ -302,11 +298,8 @@ export const useNavigateToPreviouslySelectedComponentOrDefault = () => {
 		[previouslyFocusedComponent, setFocusedComponent]
 	)
 	return useMemo(
-		() => ({
-			navigateToPreviouslySelectedComponentOrDefault,
-			dependency: previouslyFocusedComponent,
-		}),
-		[navigateToPreviouslySelectedComponentOrDefault, previouslyFocusedComponent]
+		() => ({ navigateToPreviouslySelectedComponentOrDefault }),
+		[navigateToPreviouslySelectedComponentOrDefault]
 	)
 }
 

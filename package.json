@@ -15,10 +15,16 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"devDependencies": {
+		"@babel/cli": "^7.29.7",
+		"@babel/core": "^7.29.13",
+		"@babel/preset-env": "^7.29.14",
+		"@babel/preset-react": "^7.29.7",
+		"@babel/preset-typescript": "^7.29.7",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
+		"babel-plugin-react-compiler": "^1.0.0",
 		"eslint": "^7.32.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-config-standard": "^16.0.3",
@@ -48,7 +54,7 @@
 	},
 	"scripts": {
 		"start": "cd demo && yarn start",
-		"build": "rm -rf dist && tsc",
+		"build": "rm -rf dist && babel src --out-dir dist --extensions .ts,.tsx && tsc --emitDeclarationOnly",
 		"typecheck": "tsc --noEmit",
 		"lint": "eslint src --ext .ts,.tsx --max-warnings 0",
 		"prepare": "husky install",
@@ -56,5 +62,8 @@
 	},
 	"publishConfig": {
 		"registry": "https://npm.taktik.be/repository/npm/"
+	},
+	"dependencies": {
+		"react-compiler-runtime": "^1.0.0"
 	}
 }

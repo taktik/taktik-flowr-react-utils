@@ -5,6 +5,8 @@ import React, {
 	createContext,
 	useEffect,
 	useContext,
+	useCallback,
+	useMemo,
 	Dispatch,
 	SetStateAction,
 } from 'react'
@@ -63,21 +65,22 @@ export const UseNavigationProvider = ({
 	const [previouslyFocusedComponent, setPreviouslyFocusedComponent] = useState(
 		defaultPreviouslyFocusedComponentName ?? null
 	)
-	const resetPreviouslySelectedComponent = () => setPreviouslyFocusedComponent(null)
-
-	return (
-		<NevigationContext.Provider
-			value={{
-				focusedComponent,
-				setFocusedComponent,
-				previouslyFocusedComponent,
-				setPreviouslyFocusedComponent,
-				resetPreviouslySelectedComponent,
-			}}
-		>
-			{children}
-		</NevigationContext.Provider>
+	const resetPreviouslySelectedComponent = useCallback(
+		() => setPreviouslyFocusedComponent(null),
+		[]
 	)
+	const value = useMemo(
+		() => ({
+			focusedComponent,
+			setFocusedComponent,
+			previouslyFocusedComponent,
+			setPreviouslyFocusedComponent,
+			resetPreviouslySelectedComponent,
+		}),
+		[focusedComponent, previouslyFocusedComponent, resetPreviouslySelectedComponent]
+	)
+
+	return <NevigationContext.Provider value={value}>{children}</NevigationContext.Provider>
 }
 
 interface IParams {
@@ -233,12 +236,18 @@ export const useNavigateToComponent = (
 ) => {
 	const { setFocusedComponent, setPreviouslyFocusedComponent, focusedComponent } =
 		useContext(NevigationContext)
-	return () => {
+	return useCallback(() => {
 		if (shouldSavePreviouslyFocused) {
 			setPreviouslyFocusedComponent(focusedComponent)
 		}
 		setFocusedComponent(componentName)
-	}
+	}, [
+		componentName,
+		shouldSavePreviouslyFocused,
+		focusedComponent,
+		setFocusedComponent,
+		setPreviouslyFocusedComponent,
+	])
 }
 
 /**
@@ -249,12 +258,19 @@ export const useNavigateToComponent = (
  */
 export const useNavigateToPreviouslySelectedComponentOrDefault = () => {
 	const { previouslyFocusedComponent, setFocusedComponent } = useContext(NevigationContext)
-	return {
-		navigateToPreviouslySelectedComponentOrDefault: (defaultComponentToFocus: string) => {
+	const navigateToPreviouslySelectedComponentOrDefault = useCallback(
+		(defaultComponentToFocus: string) => {
 			setFocusedComponent(previouslyFocusedComponent ?? defaultComponentToFocus)
 		},
-		dependency: previouslyFocusedComponent,
-	}
+		[previouslyFocusedComponent, setFocusedComponent]
+	)
+	return useMemo(
+		() => ({
+			navigateToPreviouslySelectedComponentOrDefault,
+			dependency: previouslyFocusedComponent,
+		}),
+		[navigateToPreviouslySelectedComponentOrDefault, previouslyFocusedComponent]
+	)
 }
 
 export const useResetPreviouslySelectedComponent = () => {

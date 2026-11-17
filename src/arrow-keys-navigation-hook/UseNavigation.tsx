@@ -26,6 +26,7 @@ interface IContext {
 	previouslyFocusedComponent: string | null
 	setPreviouslyFocusedComponent: Dispatch<SetStateAction<string | null>>
 	resetPreviouslySelectedComponent: () => void
+	eventManager?: IFlowrEventManager
 }
 
 const NevigationContext = createContext<IContext>({
@@ -59,9 +60,12 @@ export const UseNavigationProvider = ({
 	defaultFocusedComponentName,
 	defaultPreviouslyFocusedComponentName,
 }: IProps) => {
-	if (eventManager) {
-		window.eventManager = eventManager
-	}
+	// a provider without an eventManager falls back to the one another provider published here
+	useLayoutEffect(() => {
+		if (eventManager) {
+			window.eventManager = eventManager
+		}
+	}, [eventManager])
 
 	const [focusedComponent, setFocusedComponent] = useState(defaultFocusedComponentName)
 	const [previouslyFocusedComponent, setPreviouslyFocusedComponent] = useState(
@@ -78,8 +82,9 @@ export const UseNavigationProvider = ({
 			previouslyFocusedComponent,
 			setPreviouslyFocusedComponent,
 			resetPreviouslySelectedComponent,
+			eventManager,
 		}),
-		[focusedComponent, previouslyFocusedComponent, resetPreviouslySelectedComponent]
+		[focusedComponent, previouslyFocusedComponent, resetPreviouslySelectedComponent, eventManager]
 	)
 
 	return <NevigationContext.Provider value={value}>{children}</NevigationContext.Provider>
@@ -160,7 +165,6 @@ export const useNavigation = ({
 		latestContext.current = context
 	})
 
-	const { eventManager } = window
 	const hasUp = !!upAction
 	const hasRight = !!rightAction
 	const hasDown = !!downAction
@@ -168,20 +172,26 @@ export const useNavigation = ({
 	const hasEnter = !!enterAction
 	const ownsReturn = !!returnAction && !shouldReturnToFlowr
 
-	const { focusedComponent } = useContext(NevigationContext)
+	const {
+		focusedComponent,
+		setFocusedComponent,
+		eventManager: providedEventManager,
+	} = useContext(NevigationContext)
 	const isFocused = componentName === focusedComponent
-	const setFocusToThisComponent = useNavigateToComponent(componentName)
 
+	const focusOnMount = useRef(setFocusToThisComponentWhenMounted ? componentName : null)
 	useEffect(() => {
-		if (setFocusToThisComponentWhenMounted) {
-			setFocusToThisComponent()
+		if (focusOnMount.current !== null) {
+			setFocusedComponent(focusOnMount.current)
 		}
-	}, [])
+	}, [setFocusedComponent])
 
 	useEffect(() => {
 		if (!isFocused || shouldBlockActions) {
 			return
 		}
+		// demo pages outside FlowR set window.eventManager themselves
+		const eventManager = providedEventManager ?? window.eventManager
 		if (!eventManager) {
 			const onKeyDown = (event: KeyboardEvent) => {
 				switch (event.key) {
@@ -236,7 +246,7 @@ export const useNavigation = ({
 	}, [
 		isFocused,
 		shouldBlockActions,
-		eventManager,
+		providedEventManager,
 		handlers,
 		hasUp,
 		hasRight,

@@ -7,6 +7,8 @@ import React, {
 	useContext,
 	useCallback,
 	useMemo,
+	useRef,
+	useLayoutEffect,
 	Dispatch,
 	SetStateAction,
 } from 'react'
@@ -91,6 +93,7 @@ interface IParams {
 	enterAction?: () => void
 	returnAction?: () => void
 	componentName: string
+	/** @deprecated Ignored: the hook always calls the callbacks of the latest render. */
 	dependencies?: unknown[]
 	shouldReturnToFlowr?: boolean
 	setFocusToThisComponentWhenMounted?: boolean
@@ -119,8 +122,7 @@ interface IParams {
  * @param options.rightAction - The callback function to execute when the right arrow is pressed
  * @param options.enterAction - The callback function to execute when the "OK" (or enter on keyboard) button is pressed
  * @param options.returnAction - The callback function to execute when the "Return" (or backspace on keyboard) button is pressed
- * @param options.dependencies - The dependencies array, it should include any value used in any of the callback functions. It works
- * exactly like a useEffect hook dependency array.
+ * @param options.dependencies - Ignored, kept so existing callers compile: a key always runs the callback of the latest render.
  * @Return a boolean telling if the current component (defined by componentName) is currently focused.
  */
 export const useNavigation = ({
@@ -134,68 +136,37 @@ export const useNavigation = ({
 	leftAction,
 	enterAction,
 	returnAction,
-	dependencies,
 	context,
 }: IParams) => {
-	const actionsHandler = (event: KeyboardEvent) => {
-		switch (event.key) {
-			case 'ArrowUp':
-				event.preventDefault()
-				upAction?.()
-				break
-			case 'ArrowRight':
-				event.preventDefault()
-				rightAction?.()
-				break
-			case 'ArrowDown':
-				event.preventDefault()
-				downAction?.()
-				break
-			case 'ArrowLeft':
-				event.preventDefault()
-				leftAction?.()
-				break
-			case 'Enter':
-				enterAction?.()
-				break
-			case 'Backspace':
-				!shouldReturnToFlowr && returnAction?.()
-				break
-		}
-	}
+	const actions = { upAction, rightAction, downAction, leftAction, enterAction, returnAction }
+	const latestActions = useRef(actions)
+	useLayoutEffect(() => {
+		latestActions.current = actions
+	})
+	// subscribed once per focus change; each call reaches the callback of the latest render
+	const handlers = useMemo(
+		() => ({
+			up: () => latestActions.current.upAction?.(),
+			right: () => latestActions.current.rightAction?.(),
+			down: () => latestActions.current.downAction?.(),
+			left: () => latestActions.current.leftAction?.(),
+			enter: () => latestActions.current.enterAction?.(),
+			return: () => latestActions.current.returnAction?.(),
+		}),
+		[]
+	)
+	const latestContext = useRef(context)
+	useLayoutEffect(() => {
+		latestContext.current = context
+	})
 
 	const { eventManager } = window
-	const subscribe = () => {
-		unsubscribe()
-		if (eventManager) {
-			upAction && eventManager.on(FlowrEventName.ARROW_UP_PRESS, upAction, context ?? this)
-			rightAction && eventManager.on(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, context ?? this)
-			downAction && eventManager.on(FlowrEventName.ARROW_DOWN_PRESS, downAction, context ?? this)
-			leftAction && eventManager.on(FlowrEventName.ARROW_LEFT_PRESS, leftAction, context ?? this)
-			enterAction && eventManager.on(FlowrEventName.ENTER_PRESS, enterAction, context ?? this)
-			returnAction &&
-				!shouldReturnToFlowr &&
-				eventManager.forceOn(FlowrEventName.RETURN_PRESS, returnAction, context ?? this)
-		} else {
-			window.addEventListener('keydown', actionsHandler)
-		}
-	}
-
-	const unsubscribe = () => {
-		if (eventManager) {
-			upAction && eventManager.off(FlowrEventName.ARROW_UP_PRESS, upAction, context ?? this)
-			rightAction &&
-				eventManager.off(FlowrEventName.ARROW_RIGHT_PRESS, rightAction, context ?? this)
-			downAction && eventManager.off(FlowrEventName.ARROW_DOWN_PRESS, downAction, context ?? this)
-			leftAction && eventManager.off(FlowrEventName.ARROW_LEFT_PRESS, leftAction, context ?? this)
-			enterAction && eventManager.off(FlowrEventName.ENTER_PRESS, enterAction, context ?? this)
-			returnAction &&
-				!shouldReturnToFlowr &&
-				eventManager.forceOff(FlowrEventName.RETURN_PRESS, returnAction, context ?? this)
-		} else {
-			window.removeEventListener('keydown', actionsHandler)
-		}
-	}
+	const hasUp = !!upAction
+	const hasRight = !!rightAction
+	const hasDown = !!downAction
+	const hasLeft = !!leftAction
+	const hasEnter = !!enterAction
+	const ownsReturn = !!returnAction && !shouldReturnToFlowr
 
 	const { focusedComponent } = useContext(NevigationContext)
 	const isFocused = componentName === focusedComponent
@@ -208,16 +179,72 @@ export const useNavigation = ({
 	}, [])
 
 	useEffect(() => {
-		if (isFocused && !shouldBlockActions) {
-			subscribe()
-		} else {
-			unsubscribe()
+		if (!isFocused || shouldBlockActions) {
+			return
+		}
+		if (!eventManager) {
+			const onKeyDown = (event: KeyboardEvent) => {
+				switch (event.key) {
+					case 'ArrowUp':
+						event.preventDefault()
+						handlers.up()
+						break
+					case 'ArrowRight':
+						event.preventDefault()
+						handlers.right()
+						break
+					case 'ArrowDown':
+						event.preventDefault()
+						handlers.down()
+						break
+					case 'ArrowLeft':
+						event.preventDefault()
+						handlers.left()
+						break
+					case 'Enter':
+						handlers.enter()
+						break
+					case 'Backspace':
+						ownsReturn && handlers.return()
+						break
+				}
+			}
+			window.addEventListener('keydown', onKeyDown)
+			return () => window.removeEventListener('keydown', onKeyDown)
 		}
 
-		return () => {
-			unsubscribe()
+		// on and off must get the same context: the event manager matches listeners by it
+		const subscriptionContext = latestContext.current
+		const subscriptions: [FlowrEventName, () => void][] = []
+		hasUp && subscriptions.push([FlowrEventName.ARROW_UP_PRESS, handlers.up])
+		hasRight && subscriptions.push([FlowrEventName.ARROW_RIGHT_PRESS, handlers.right])
+		hasDown && subscriptions.push([FlowrEventName.ARROW_DOWN_PRESS, handlers.down])
+		hasLeft && subscriptions.push([FlowrEventName.ARROW_LEFT_PRESS, handlers.left])
+		hasEnter && subscriptions.push([FlowrEventName.ENTER_PRESS, handlers.enter])
+		for (const [name, handler] of subscriptions) {
+			eventManager.on(name, handler, subscriptionContext)
 		}
-	}, [isFocused, shouldBlockActions, ...(dependencies ?? [])])
+		ownsReturn &&
+			eventManager.forceOn(FlowrEventName.RETURN_PRESS, handlers.return, subscriptionContext)
+		return () => {
+			for (const [name, handler] of subscriptions) {
+				eventManager.off(name, handler, subscriptionContext)
+			}
+			ownsReturn &&
+				eventManager.forceOff(FlowrEventName.RETURN_PRESS, handlers.return, subscriptionContext)
+		}
+	}, [
+		isFocused,
+		shouldBlockActions,
+		eventManager,
+		handlers,
+		hasUp,
+		hasRight,
+		hasDown,
+		hasLeft,
+		hasEnter,
+		ownsReturn,
+	])
 
 	return isFocused
 }

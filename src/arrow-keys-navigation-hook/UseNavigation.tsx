@@ -12,7 +12,7 @@ import React, {
 	Dispatch,
 	SetStateAction,
 } from 'react'
-import { FlowrEventName, IFlowrEventManager } from 'taktik_flowr_interface'
+import { AppKeyEventName, FlowrEvent, IFlowrEventManager, KeyHandler } from 'taktik_flowr_interface'
 
 declare global {
 	interface Window {
@@ -161,17 +161,35 @@ export const useNavigation = ({
 		latest.current = props
 	})
 	// subscribed once per focus change; each call reaches the callback of the latest render
-	const handlers = useMemo(
-		() => ({
-			up: () => latest.current.upAction?.(),
-			right: () => latest.current.rightAction?.(),
-			down: () => latest.current.downAction?.(),
-			left: () => latest.current.leftAction?.(),
-			enter: () => latest.current.enterAction?.(),
-			return: () => latest.current.returnAction?.(),
-		}),
-		[]
-	)
+	const handlers = useMemo(() => {
+		// a handler is subscribed only while its action exists, so it always uses the key
+		return {
+			up: (): boolean => {
+				latest.current.upAction?.()
+				return true
+			},
+			right: (): boolean => {
+				latest.current.rightAction?.()
+				return true
+			},
+			down: (): boolean => {
+				latest.current.downAction?.()
+				return true
+			},
+			left: (): boolean => {
+				latest.current.leftAction?.()
+				return true
+			},
+			enter: (): boolean => {
+				latest.current.enterAction?.()
+				return true
+			},
+			return: (): boolean => {
+				latest.current.returnAction?.()
+				return true
+			},
+		}
+	}, [])
 
 	const hasUp = !!upAction
 	const hasRight = !!rightAction
@@ -234,23 +252,23 @@ export const useNavigation = ({
 
 		// on and off must get the same context: the event manager matches listeners by it
 		const subscriptionContext = latest.current.context
-		const subscriptions: [FlowrEventName, () => void][] = []
-		hasUp && subscriptions.push([FlowrEventName.ARROW_UP_PRESS, handlers.up])
-		hasRight && subscriptions.push([FlowrEventName.ARROW_RIGHT_PRESS, handlers.right])
-		hasDown && subscriptions.push([FlowrEventName.ARROW_DOWN_PRESS, handlers.down])
-		hasLeft && subscriptions.push([FlowrEventName.ARROW_LEFT_PRESS, handlers.left])
-		hasEnter && subscriptions.push([FlowrEventName.ENTER_PRESS, handlers.enter])
+		const subscriptions: [AppKeyEventName, KeyHandler][] = []
+		hasUp && subscriptions.push([FlowrEvent.ARROW_UP_PRESS, handlers.up])
+		hasRight && subscriptions.push([FlowrEvent.ARROW_RIGHT_PRESS, handlers.right])
+		hasDown && subscriptions.push([FlowrEvent.ARROW_DOWN_PRESS, handlers.down])
+		hasLeft && subscriptions.push([FlowrEvent.ARROW_LEFT_PRESS, handlers.left])
+		hasEnter && subscriptions.push([FlowrEvent.ENTER_PRESS, handlers.enter])
 		for (const [name, handler] of subscriptions) {
 			eventManager.on(name, handler, subscriptionContext)
 		}
 		ownsReturn &&
-			eventManager.forceOn(FlowrEventName.RETURN_PRESS, handlers.return, subscriptionContext)
+			eventManager.forceOn(FlowrEvent.RETURN_PRESS, handlers.return, subscriptionContext)
 		return () => {
 			for (const [name, handler] of subscriptions) {
 				eventManager.off(name, handler, subscriptionContext)
 			}
 			ownsReturn &&
-				eventManager.forceOff(FlowrEventName.RETURN_PRESS, handlers.return, subscriptionContext)
+				eventManager.forceOff(FlowrEvent.RETURN_PRESS, handlers.return, subscriptionContext)
 		}
 	}, [
 		isFocused,

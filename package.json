@@ -41,7 +41,7 @@
 		"react": "^19.3.1",
 		"react-dom": "^19.3.1",
 		"styled-components": "^6.1.8",
-		"taktik_flowr_interface": "^5.3.3-alpha.0",
+		"taktik_flowr_interface": "7.0.0-alpha.0",
 		"typescript": "^5.3.3"
 	},
 	"peerDependencies": {
@@ -50,7 +50,7 @@
 		"react": ">=19.0",
 		"react-dom": ">=19.0",
 		"styled-components": ">=5.0",
-		"taktik_flowr_interface": ">=5.3.3-alpha.0"
+		"taktik_flowr_interface": ">=7.0.0-alpha.0"
 	},
 	"scripts": {
 		"start": "cd demo && yarn start",

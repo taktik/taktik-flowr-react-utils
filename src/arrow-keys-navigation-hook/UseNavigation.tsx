@@ -12,7 +12,12 @@ import React, {
 	Dispatch,
 	SetStateAction,
 } from 'react'
-import { AppKeyEventName, FlowrEvent, IFlowrEventManager, KeyHandler } from 'taktik_flowr_interface'
+import {
+	AppKeyEventName,
+	FlowrEvent,
+	IFlowrEventManager,
+	KeyHandler,
+} from '@taktik/flowr-interface'
 
 declare global {
 	interface Window {

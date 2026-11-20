@@ -20,6 +20,7 @@
 		"@babel/preset-env": "^7.29.14",
 		"@babel/preset-react": "^7.29.7",
 		"@babel/preset-typescript": "^7.29.7",
+		"@taktik/flowr-interface": "7.0.0-alpha.0",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -41,16 +42,15 @@
 		"react": "^19.3.1",
 		"react-dom": "^19.3.1",
 		"styled-components": "^6.1.8",
-		"taktik_flowr_interface": "7.0.0-alpha.0",
 		"typescript": "^5.3.3"
 	},
 	"peerDependencies": {
+		"@taktik/flowr-interface": ">=7.0.0-alpha.0",
 		"@types/react": ">=19.0",
 		"@types/react-dom": ">=19.0",
 		"react": ">=19.0",
 		"react-dom": ">=19.0",
-		"styled-components": ">=5.0",
-		"taktik_flowr_interface": ">=7.0.0-alpha.0"
+		"styled-components": ">=5.0"
 	},
 	"scripts": {
 		"start": "cd demo && yarn start",
